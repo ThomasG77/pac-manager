@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="producteurs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="producteur"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="producteur">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="demandeur"/>
+        <xs:element ref="rpg"/>
+        <xs:element ref="effectifs-animaux"/>
+        <xs:element ref="maec-prm"/>
+        <xs:element ref="demandes-aides-pilier1-et-AR"/>
+        <xs:element ref="demandes-aides-pilier2"/>
+        <xs:element ref="pieces-jointes"/>
+      </xs:sequence>
+      <xs:attribute name="campagne" use="required" type="xs:NCName"/>
+      <xs:attribute name="fichier-xsd" use="required"/>
+      <xs:attribute name="numero-pacage" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demandeur">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="identification-societe"/>
+        <xs:element ref="siret"/>
+        <xs:element ref="iban"/>
+        <xs:element ref="courriel"/>
+      </xs:sequence>
+      <xs:attribute name="certificat-environnemental" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="identification-societe">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="exploitation"/>
+        <xs:element ref="associes"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="exploitation" type="xs:string"/>
+  <xs:element name="associes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="associe"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="associe">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="identite"/>
+        <xs:element ref="numero-fiscal"/>
+      </xs:sequence>
+      <xs:attribute name="numero-pacage" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="identite">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="civilite"/>
+        <xs:element ref="nom"/>
+        <xs:element ref="prenoms"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="civilite" type="xs:NCName"/>
+  <xs:element name="nom" type="xs:NCName"/>
+  <xs:element name="prenoms" type="xs:NCName"/>
+  <xs:element name="numero-fiscal" type="xs:integer"/>
+  <xs:element name="siret" type="xs:integer"/>
+  <xs:element name="iban">
+    <xs:complexType>
+      <xs:attribute name="bic" use="required" type="xs:NCName"/>
+      <xs:attribute name="compte-iban" use="required" type="xs:NCName"/>
+      <xs:attribute name="titulaire" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="courriel" type="xs:string"/>
+  <xs:element name="rpg">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ilot"/>
+        <xs:element maxOccurs="unbounded" ref="sna-declaree"/>
+        <xs:element maxOccurs="unbounded" ref="zdh-declaree"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ilot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="commune"/>
+        <xs:element ref="geometrie"/>
+        <xs:element ref="parcelles"/>
+      </xs:sequence>
+      <xs:attribute name="numero-ilot" use="required" type="xs:integer"/>
+      <xs:attribute name="numero-ilot-reference" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parcelles">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="parcelle"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parcelle">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="descriptif-parcelle"/>
+        <xs:element ref="geometrie"/>
+        <xs:element minOccurs="0" ref="surface-admissible"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="descriptif-parcelle">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="culture-principale"/>
+        <xs:element minOccurs="0" ref="engagements-maec"/>
+      </xs:sequence>
+      <xs:attribute name="numero-parcelle" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="culture-principale">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="code-culture"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="precision"/>
+          <xs:sequence>
+            <xs:element ref="reconversion-pp"/>
+            <xs:element ref="retournement-pp"/>
+          </xs:sequence>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="destination" type="xs:NCName"/>
+      <xs:attribute name="production-semences" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="code-culture" type="xs:NCName"/>
+  <xs:element name="precision" type="xs:integer"/>
+  <xs:element name="reconversion-pp" type="xs:boolean"/>
+  <xs:element name="retournement-pp" type="xs:boolean"/>
+  <xs:element name="engagements-maec">
+    <xs:complexType>
+      <xs:attribute name="surface-cible" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="surface-admissible" type="xs:integer"/>
+  <xs:element name="sna-declaree">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="numeroSna"/>
+          <xs:element ref="numeroSnacreationTas"/>
+        </xs:choice>
+        <xs:element ref="categorieSna"/>
+        <xs:element ref="typeSna"/>
+        <xs:element minOccurs="0" ref="murTraditionnelPierreSIE"/>
+        <xs:element ref="geometrie"/>
+        <xs:element ref="intersectionsSnaIlots"/>
+        <xs:element minOccurs="0" ref="intersectionsSnaParcelles"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="numeroSna" type="xs:integer"/>
+  <xs:element name="numeroSnacreationTas" type="xs:integer"/>
+  <xs:element name="categorieSna" type="xs:NCName"/>
+  <xs:element name="typeSna" type="xs:NCName"/>
+  <xs:element name="murTraditionnelPierreSIE" type="xs:boolean"/>
+  <xs:element name="intersectionsSnaIlots">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="intersectionSnaIlot"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="intersectionSnaIlot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="numeroIlot"/>
+        <xs:element minOccurs="0" ref="largeur"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="largeur" type="xs:decimal"/>
+  <xs:element name="intersectionsSnaParcelles">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="intersectionSnaParcelle"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="intersectionSnaParcelle">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="numeroIlot"/>
+        <xs:element ref="numeroParcelle"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="longueur-sie"/>
+          <xs:element ref="nombreArbres"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="numeroParcelle" type="xs:integer"/>
+  <xs:element name="longueur-sie" type="xs:decimal"/>
+  <xs:element name="nombreArbres" type="xs:integer"/>
+  <xs:element name="zdh-declaree">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="numeroZdh"/>
+          <xs:element ref="numeroZdhcreationTas"/>
+        </xs:choice>
+        <xs:element ref="densiteVegetation"/>
+        <xs:element ref="geometrie"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="numeroZdh" type="xs:integer"/>
+  <xs:element name="numeroZdhcreationTas" type="xs:integer"/>
+  <xs:element name="densiteVegetation" type="xs:NCName"/>
+  <xs:element name="effectifs-animaux">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="effectif-animal"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="effectif-animal">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="effectif-present-ou-transhumant"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="effectif-present-ou-transhumant">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="type-animal-1"/>
+        <xs:element ref="nb-animaux-1"/>
+        <xs:element minOccurs="0" ref="effectifs-transhumant"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="type-animal-1" type="xs:NCName"/>
+  <xs:element name="nb-animaux-1" type="xs:integer"/>
+  <xs:element name="effectifs-transhumant">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="effectif-transhumant"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="effectif-transhumant">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="nb-animaux-recus"/>
+        <xs:element ref="estive"/>
+        <xs:element ref="nom-exploitant"/>
+        <xs:element ref="departement"/>
+        <xs:element ref="commune"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="nb-animaux-recus" type="xs:integer"/>
+  <xs:element name="estive" type="xs:boolean"/>
+  <xs:element name="nom-exploitant" type="xs:string"/>
+  <xs:element name="departement" type="xs:integer"/>
+  <xs:element name="maec-prm">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="femelle-reproductrice"/>
+        <xs:element ref="organisme-gestionnaire-race"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="femelle-reproductrice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="nombre-animaux"/>
+      </xs:sequence>
+      <xs:attribute name="espece" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="nombre-animaux">
+    <xs:complexType>
+      <xs:attribute name="nombre-animaux" use="required" type="xs:integer"/>
+      <xs:attribute name="race" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="organisme-gestionnaire-race">
+    <xs:complexType>
+      <xs:attribute name="organisme-race" use="required"/>
+      <xs:attribute name="race" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demandes-aides-pilier1-et-AR">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="demande-aides-decouplees"/>
+        <xs:element ref="demande-legumineuses-fourrageres"/>
+        <xs:element ref="demande-assurance-recolte"/>
+      </xs:sequence>
+      <xs:attribute name="ble-dur" use="required" type="xs:boolean"/>
+      <xs:attribute name="cerises-transformation" use="required" type="xs:boolean"/>
+      <xs:attribute name="chanvre" use="required" type="xs:boolean"/>
+      <xs:attribute name="houblon" use="required" type="xs:boolean"/>
+      <xs:attribute name="legumineuses-fourrageres-deshydratation" use="required" type="xs:boolean"/>
+      <xs:attribute name="paiement-jeunes-agriculteurs" use="required" type="xs:boolean"/>
+      <xs:attribute name="peches-transformation" use="required" type="xs:boolean"/>
+      <xs:attribute name="poires-transformation" use="required" type="xs:boolean"/>
+      <xs:attribute name="pommes-terre-feculieres" use="required" type="xs:boolean"/>
+      <xs:attribute name="proteagineux" use="required" type="xs:boolean"/>
+      <xs:attribute name="prunes-transformation" use="required" type="xs:boolean"/>
+      <xs:attribute name="riz" use="required" type="xs:boolean"/>
+      <xs:attribute name="semences-graminees" use="required" type="xs:boolean"/>
+      <xs:attribute name="semences-legumineuses-fourrageres" use="required" type="xs:boolean"/>
+      <xs:attribute name="soja" use="required" type="xs:boolean"/>
+      <xs:attribute name="tomates-industrie" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demande-aides-decouplees">
+    <xs:complexType>
+      <xs:attribute name="aides-decouplees" use="required" type="xs:boolean"/>
+      <xs:attribute name="derogation-AB" use="required" type="xs:boolean"/>
+      <xs:attribute name="schema-certification-mais" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demande-legumineuses-fourrageres">
+    <xs:complexType>
+      <xs:attribute name="legumineuse-fourragere" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demande-assurance-recolte">
+    <xs:complexType>
+      <xs:attribute name="assurance-recolte" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="demandes-aides-pilier2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ichn"/>
+      </xs:sequence>
+      <xs:attribute name="demande-ab" use="required" type="xs:boolean"/>
+      <xs:attribute name="demande-agroforesterie" use="required" type="xs:boolean"/>
+      <xs:attribute name="demande-maec" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ichn">
+    <xs:complexType>
+      <xs:attribute name="demande-ichn" use="required" type="xs:boolean"/>
+      <xs:attribute name="pension-reversion" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pieces-jointes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="pj"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pj">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="intitule"/>
+      </xs:sequence>
+      <xs:attribute name="code-type-pj" use="required" type="xs:integer"/>
+      <xs:attribute name="type-pj" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="intitule" type="xs:string"/>
+  <xs:element name="commune" type="xs:integer"/>
+  <xs:element name="geometrie">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Point"/>
+        <xs:element ref="Polygon"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Point" type="coordinates"/>
+  <xs:element name="Polygon">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="outerBoundaryIs"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="innerBoundaryIs"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="outerBoundaryIs" type="LinearRing"/>
+  <xs:element name="innerBoundaryIs" type="LinearRing"/>
+  <xs:element name="numeroIlot" type="xs:integer"/>
+  <xs:complexType name="coordinates">
+    <xs:sequence>
+      <xs:element ref="coordinates"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="coordinates" type="xs:string"/>
+  <xs:complexType name="LinearRing">
+    <xs:sequence>
+      <xs:element ref="LinearRing"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LinearRing" type="coordinates"/>
+</xs:schema>
