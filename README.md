@@ -4,6 +4,8 @@ L'idée de ce parser est venue de cette discussion https://georezo.net/forum/vie
 
 Vous pouvez prendre les fichiers qui sont proposés sur la précédente URL pour tester le parser mis à disposition (nous ne mettons pas les fichiers ici pour limiter la propagation de données à caractère personnel de l'utilisateur ayant choisi de les mettre à disposition)
 
+Vous trouverez ci-dessous un aperçu du projet QGIS puis les instructions relatives au script
+
 ![Un aperçu du projet QGIS](demo-resultat-telepac-parsing.gif)
 
 ## Guide d'utilisation pour créer la donnée
