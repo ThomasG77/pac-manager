@@ -2,3 +2,5 @@ trang*
 *.csv
 *.gpkg
 *.geojson
+pac_manager/venv/
+*.pyc

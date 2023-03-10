@@ -1,8 +1,14 @@
 # Parsing fichier XML Telepac
 
+L'idée de ce parser est venue de cette discussion https://georezo.net/forum/viewtopic.php?pid=356673#p356673
+
+Vous pouvez prendre les fichiers qui sont proposés sur la précédente URL pour tester le parser mis à disposition (nous ne mettons pas les fichiers ici pour limiter la propagation de données à caractère personnel de l'utilisateur ayant choisi de les mettre à disposition)
+
 ## Guide d'utilisation pour créer la donnée
 
-Il faut avoir lxml et gdal d'installé au niveau de Python. Ensuite, faire
+Il faut avoir lxml et gdal d'installé au niveau de Python. Si vous avez QGIS installé, vous devez avoir les 2 déjà.
+
+Ensuite, faire
 
     python3 read_pac_xml.py <nom_du_fichier_telepac>.xml
 
