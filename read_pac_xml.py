@@ -58,7 +58,7 @@ def createFeatureCollection(features,crs=None):
 def cleanDictKeys(dictionnary):
     return {key.replace('-','_'): val for key,val in dictionnary.items()}
 
-attribs_associes = ['civilite', 'nom', 'prenoms']
+attribs_associes_ou_identite_individu = ['civilite', 'nom', 'prenoms']
 sna_internal_counter = 0
 
 ilot_features = []
@@ -69,6 +69,7 @@ parcelles_features = []
 
 pieces_jointes = []
 producteur_infos = []
+infos_individu = []
 infos_societe = []
 infos_associes = []
 infos_maec_prm = []
@@ -84,26 +85,38 @@ for child in xml_content.getroot().getchildren():
     producteur_infos.append(cleanDictKeys(child.attrib))
     demandeur = child.find('demandeur')
     identification_societe = demandeur.find('identification-societe')
-    exploitation = identification_societe.find('exploitation')
-    exploitation = exploitation.text if exploitation is not None else None
+    identification_individu = demandeur.find('identification-individuelle')
     siret = demandeur.find('siret').text
     iban = cleanDictKeys(demandeur.find('iban').attrib)
     courriel = demandeur.find('courriel').text
-    infos_associes = infos_associes + [cleanDictKeys({
-        **associe.attrib,
-        **{attrib_associes: associe.find('identite').find(attrib_associes).text for attrib_associes in attribs_associes},
-        "numero_fiscal": associe.find('numero-fiscal').text,
-        "siret": siret
-    }) for associe in identification_societe.findall('.//associe')]
-    infos_societe_content = {
-        "exploitation": exploitation,
-        **demandeur.attrib,
-        "courriel": courriel,
-        "siret": siret,
-        **iban
-    }
-    infos_societe.append(cleanDictKeys(infos_societe_content))
-    
+    if identification_societe is not None:
+        exploitation = identification_societe.find('exploitation')
+        exploitation = exploitation.text if exploitation is not None else None
+        infos_associes = infos_associes + [cleanDictKeys({
+            **associe.attrib,
+            **{attrib_associes: associe.find('identite').find(attrib_associes).text for attrib_associes in attribs_associes_ou_identite_individu},
+            "numero_fiscal": associe.find('numero-fiscal').text,
+            "siret": siret
+        }) for associe in identification_societe.findall('.//associe')]
+        infos_societe_content = {
+            "exploitation": exploitation,
+            **dict(demandeur.attrib),
+            "courriel": courriel,
+            "siret": siret,
+            **iban
+        }
+        infos_societe.append(cleanDictKeys(infos_societe_content))
+    if identification_individu is not None:
+        # import ipdb;ipdb.set_trace()
+        infos_individu_content = {
+            **{attrib_associes: identification_individu.find('identite').find(attrib_associes).text for attrib_associes in attribs_associes_ou_identite_individu},
+            **dict(demandeur.attrib),
+            "courriel": courriel,
+            "siret": siret,
+            **iban
+        }
+        infos_individu.append(cleanDictKeys(infos_individu_content))
+
     effectifs_animaux = child.findall('.//effectif-animal')
     for effectif_animal in effectifs_animaux:
         effectifs_present_ou_transhumant = effectif_animal.findall('effectif-present-ou-transhumant')
@@ -162,6 +175,7 @@ for child in xml_content.getroot().getchildren():
         g_zdh = ogr.CreateGeometryFromGML(gml_content_zdh)
         # g_zdh.Transform(transform)
         feature_zdh_geometry = g_zdh.ExportToJson()
+        g_zdh = None
         zdh_declarees_features.append({
           "type": "Feature",
           "properties": {
@@ -179,6 +193,7 @@ for child in xml_content.getroot().getchildren():
         g_sna = ogr.CreateGeometryFromGML(gml_content_sna)
         # g_sna.Transform(transform)
         feature_sna_geometry = g_sna.ExportToJson()
+        g_sna = None
         feature_sna_geometry = json.loads(feature_sna_geometry)
 
         if sna.find("numeroSna") is None:
@@ -244,6 +259,7 @@ for child in xml_content.getroot().getchildren():
         g_ilot = ogr.CreateGeometryFromGML(gml_content)
         # g_ilot.Transform(transform)
         feature_geometry = g_ilot.ExportToJson()
+        g_ilot = None
         ilot_features.append({
           "type": "Feature",
           "properties": properties_ilot,
@@ -277,6 +293,7 @@ for child in xml_content.getroot().getchildren():
             g_parcelle = ogr.CreateGeometryFromGML(gml_content_parcelle)
             # g_parcelle.Transform(transform)
             feature_parcelle_geometry = g_parcelle.ExportToJson()
+            g_parcelle = None
             parcelles_features.append({
               "type": "Feature",
               "properties": properties_parcelle,
@@ -298,8 +315,6 @@ for k, v in list_geojson.items():
 list_csv = {
     'pieces_jointes': pieces_jointes,
     'producteur_infos': producteur_infos,
-    'infos_societe': infos_societe,
-    'infos_associes': infos_associes,
     'infos_maec_prm': infos_maec_prm,
     'infos_demandes_aides_pilier1': infos_demandes_aides_pilier1,
     'infos_demandes_aides_pilier2': infos_demandes_aides_pilier2,
@@ -308,6 +323,13 @@ list_csv = {
     'infos_effectifs_animaux': infos_effectifs_animaux,
     'infos_effectifs_transhumants': infos_effectifs_transhumants
 }
+
+if len(infos_societe) > 0:
+    list_csv['infos_societe'] = infos_societe
+    list_csv['infos_associes'] = infos_associes
+
+if len(infos_individu) > 0:
+    list_csv['infos_individu'] = infos_individu
 
 for k, v in list_csv.items():
     with open(f'{k}.csv', 'w', encoding='utf8', newline='') as outfile:
