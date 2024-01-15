@@ -138,12 +138,13 @@ for child in xml_content.getroot().getchildren():
                 })
 
     maec_prm = child.find('maec-prm')
-    femelle_reproductrice = maec_prm.find('femelle-reproductrice')
-    infos_maec_prm.append(cleanDictKeys({
-        **femelle_reproductrice.attrib,
-        **femelle_reproductrice.find('nombre-animaux').attrib,
-        **maec_prm.find('organisme-gestionnaire-race').attrib
-    }))
+    if maec_prm is not None:
+        femelle_reproductrice = maec_prm.find('femelle-reproductrice')
+        infos_maec_prm.append(cleanDictKeys({
+            **femelle_reproductrice.attrib,
+            **femelle_reproductrice.find('nombre-animaux').attrib,
+            **maec_prm.find('organisme-gestionnaire-race').attrib
+        }))
 
     demandes_aides_pilier1_et_AR = child.find('demandes-aides-pilier1-et-AR')
     values_pilier1 = [i.attrib for i in demandes_aides_pilier1_et_AR.getchildren()]
@@ -161,11 +162,12 @@ for child in xml_content.getroot().getchildren():
     }))
 
     # print([i.tag for i in child.getchildren()])
-    for pj in child.find('pieces-jointes').findall('./pj'):
-        pieces_jointes.append(cleanDictKeys({
-            **pj.attrib,
-            "intitule": pj.find('intitule').text
-        }))
+    if child.find('pieces-jointes') is not None:
+        for pj in child.find('pieces-jointes').findall('./pj'):
+            pieces_jointes.append(cleanDictKeys({
+                **pj.attrib,
+                "intitule": pj.find('intitule').text
+            }))
     rpg = child.find('rpg')
     zdh_declarees = rpg.findall('zdh-declaree')
     for zdh in zdh_declarees:
@@ -313,15 +315,11 @@ for k, v in list_geojson.items():
         json.dump(createFeatureCollection(v, 2154), outfile)
 
 list_csv = {
-    'pieces_jointes': pieces_jointes,
     'producteur_infos': producteur_infos,
-    'infos_maec_prm': infos_maec_prm,
     'infos_demandes_aides_pilier1': infos_demandes_aides_pilier1,
     'infos_demandes_aides_pilier2': infos_demandes_aides_pilier2,
     'intersection_sna_ilots': intersection_sna_ilots,
-    'intersection_sna_parcelles': intersection_sna_parcelles,
-    'infos_effectifs_animaux': infos_effectifs_animaux,
-    'infos_effectifs_transhumants': infos_effectifs_transhumants
+    'intersection_sna_parcelles': intersection_sna_parcelles
 }
 
 if len(infos_societe) > 0:
@@ -330,6 +328,19 @@ if len(infos_societe) > 0:
 
 if len(infos_individu) > 0:
     list_csv['infos_individu'] = infos_individu
+
+if len(infos_maec_prm) > 0:
+    list_csv['infos_maec_prm'] = infos_maec_prm
+
+if len(pieces_jointes) > 0:
+    list_csv['pieces_jointes'] = pieces_jointes
+
+if len(infos_effectifs_animaux,) > 0:
+    list_csv['infos_effectifs_animaux'] = infos_effectifs_animaux,
+
+if len(infos_effectifs_transhumants) > 0:
+    list_csv['infos_effectifs_transhumants'] = infos_effectifs_transhumants
+
 
 for k, v in list_csv.items():
     with open(f'{k}.csv', 'w', encoding='utf8', newline='') as outfile:
