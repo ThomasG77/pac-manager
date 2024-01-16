@@ -10,6 +10,13 @@ from itertools import groupby, chain
 from osgeo import gdal, ogr, osr
 import argparse
 
+def hook_ipdb():
+    import sys, ipdb, traceback
+    def info(type, value, tb):
+        traceback.print_exception(type, value, tb)
+        ipdb.pm()
+    sys.excepthook = info
+
 try:
     from lxml import etree, objectify
 except ImportError:
@@ -336,7 +343,7 @@ if len(pieces_jointes) > 0:
     list_csv['pieces_jointes'] = pieces_jointes
 
 if len(infos_effectifs_animaux,) > 0:
-    list_csv['infos_effectifs_animaux'] = infos_effectifs_animaux,
+    list_csv['infos_effectifs_animaux'] = infos_effectifs_animaux
 
 if len(infos_effectifs_transhumants) > 0:
     list_csv['infos_effectifs_transhumants'] = infos_effectifs_transhumants
