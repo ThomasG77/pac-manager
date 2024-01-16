@@ -326,28 +326,17 @@ list_csv = {
     'infos_demandes_aides_pilier1': infos_demandes_aides_pilier1,
     'infos_demandes_aides_pilier2': infos_demandes_aides_pilier2,
     'intersection_sna_ilots': intersection_sna_ilots,
-    'intersection_sna_parcelles': intersection_sna_parcelles
+    'intersection_sna_parcelles': intersection_sna_parcelles,
+    'infos_societe': infos_societe,
+    'infos_associes': infos_associes,
+    'infos_individu': infos_individu,
+    'infos_maec_prm': infos_maec_prm,
+    'pieces_jointes': pieces_jointes,
+    'infos_effectifs_animaux': infos_effectifs_animaux,
+    'infos_effectifs_transhumants': infos_effectifs_transhumants
 }
 
-if len(infos_societe) > 0:
-    list_csv['infos_societe'] = infos_societe
-    list_csv['infos_associes'] = infos_associes
-
-if len(infos_individu) > 0:
-    list_csv['infos_individu'] = infos_individu
-
-if len(infos_maec_prm) > 0:
-    list_csv['infos_maec_prm'] = infos_maec_prm
-
-if len(pieces_jointes) > 0:
-    list_csv['pieces_jointes'] = pieces_jointes
-
-if len(infos_effectifs_animaux,) > 0:
-    list_csv['infos_effectifs_animaux'] = infos_effectifs_animaux
-
-if len(infos_effectifs_transhumants) > 0:
-    list_csv['infos_effectifs_transhumants'] = infos_effectifs_transhumants
-
+list_csv = {k: v for k,v in list_csv.items() if len(v) > 0}
 
 for k, v in list_csv.items():
     with open(f'{k}.csv', 'w', encoding='utf8', newline='') as outfile:
